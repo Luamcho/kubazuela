@@ -26,13 +26,22 @@ export function About() {
             </p>
           </div>
 
-          <div className="mx-auto flex aspect-square w-48 rotate-[-6deg] items-center justify-center rounded-full border-[3px] border-dashed border-guava text-center md:w-56">
-            <span className="font-display text-lg uppercase leading-tight text-guava">
+          <div className="mx-auto flex aspect-square w-48 rotate-[-4deg] flex-col items-center justify-center gap-2 rounded-full border-4 border-mango bg-bay text-center shadow-lg ring-2 ring-mango/30 ring-offset-4 ring-offset-paper md:w-56">
+            <svg
+              viewBox="0 0 24 24"
+              className="h-8 w-8 fill-none stroke-mango stroke-[1.6]"
+            >
+              <rect x="3" y="8" width="14" height="10" rx="1.5" />
+              <path d="M17 11h2.5L21 14v4h-4" />
+              <circle cx="7.5" cy="19" r="1.6" fill="#023047" />
+              <circle cx="17.5" cy="19" r="1.6" fill="#023047" />
+              <path d="M3 8V5h9v3" />
+            </svg>
+            <span className="font-display text-3xl leading-none text-paper">
               100%
-              <br />
-              Delivery
-              <br />
-              &amp; Pick-up
+            </span>
+            <span className="max-w-[8rem] font-mono text-[10px] uppercase leading-tight tracking-widest text-mango">
+              Delivery &amp; Pick-up
             </span>
           </div>
         </div>
