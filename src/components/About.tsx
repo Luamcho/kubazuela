@@ -19,11 +19,6 @@ export function About() {
               Delivery y Pick-up para garantizar que tu comida llegue siempre
               fresca y deliciosa.
             </p>
-            <p className="mt-4 max-w-lg font-body text-sm text-ink/60">
-              Authentic Latin flavor in every bite. Enjoy the best of
-              Venezuelan and Cuban cuisine by order — delivered straight to
-              your door, or ready for you to swing by and pick up.
-            </p>
           </div>
 
           <div className="mx-auto flex aspect-square w-48 rotate-[-4deg] flex-col items-center justify-center gap-2 rounded-full border-4 border-mango bg-bay text-center shadow-lg ring-2 ring-mango/30 ring-offset-4 ring-offset-paper md:w-56">

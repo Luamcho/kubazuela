@@ -9,7 +9,7 @@ const MAPS_URL =
   encodeURIComponent(ADDRESS);
 
 const chat = [
-  { from: "them", text: "Hola! Quiero pedir un Pabellón Criollo para 2 y una Ropa Vieja 😋" },
+  { from: "them", text: "Hola! Quiero pedir el combo Mount Roraima y un Chocoflan 😋" },
   { from: "us", text: "¡Con gusto! ¿Pick-up o delivery?" },
   { from: "them", text: "Delivery, por favor" },
   { from: "us", text: "Perfecto, en camino en 40–50 min 🚗🍽️" },
