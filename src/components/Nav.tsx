@@ -11,12 +11,21 @@ const links = [
   { id: "pedir", label: "Ubicación" },
 ];
 
-export function Nav() {
+interface NavProps {
+  onGallery: () => void;
+}
+
+export function Nav({ onGallery }: NavProps) {
   const [open, setOpen] = useState(false);
 
   const goTo = (id: string) => {
     setOpen(false);
     scrollToId(id);
+  };
+
+  const goToGallery = () => {
+    setOpen(false);
+    onGallery();
   };
 
   return (
@@ -37,6 +46,13 @@ export function Nav() {
               {link.label}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={goToGallery}
+            className="rounded-full px-4 py-2 text-paper/80 transition-colors hover:bg-paper/10 hover:text-mango"
+          >
+            Galería
+          </button>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -82,6 +98,13 @@ export function Nav() {
               {link.label}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={goToGallery}
+            className="rounded-full px-4 py-2.5 text-left text-paper/80 transition-colors hover:bg-paper/10 hover:text-mango"
+          >
+            Galería
+          </button>
         </nav>
       )}
     </header>
