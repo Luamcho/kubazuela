@@ -1,12 +1,6 @@
 import { WaveDivider } from "./WaveDivider";
 import logo from "@/assets/logo";
-
-const WHATSAPP_URL = "https://wa.me/17863077229";
-const PHONE_DISPLAY = "(786) 307-7229";
-const ADDRESS = "10341 Avelar Ridge Dr, Riverview, FL 33578";
-const MAPS_URL =
-  "https://www.google.com/maps/search/?api=1&query=" +
-  encodeURIComponent(ADDRESS);
+import { useContent } from "@/lib/content";
 
 const chat = [
   { from: "them", text: "Hola! Quiero pedir el combo Mount Roraima y un Chocoflan 😋" },
@@ -16,6 +10,14 @@ const chat = [
 ];
 
 export function OrderSection() {
+  const { contact, hours } = useContent();
+  const WHATSAPP_URL = contact.whatsappUrl;
+  const PHONE_DISPLAY = contact.phoneDisplay;
+  const ADDRESS = contact.address;
+  const MAPS_URL =
+    "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent(ADDRESS);
+
   return (
     <section id="pedir" className="bg-bay-dark">
       <WaveDivider fromColor="#FBF6EA" toColor="#011E2D" />
@@ -92,9 +94,9 @@ export function OrderSection() {
                   Horario
                 </dt>
                 <dd className="mt-1 font-body text-paper/90">
-                  Lunes a viernes · 4:00 pm – 10:00 pm
+                  {hours.weekday}
                   <br />
-                  Sábado y domingo · 10:00 am – 10:00 pm
+                  {hours.weekend}
                 </dd>
               </div>
               <div>

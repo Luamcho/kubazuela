@@ -1,9 +1,11 @@
-const ADDRESS = "10341 Avelar Ridge Dr, Riverview, FL 33578";
-const GOOGLE_REVIEWS_URL =
-  "https://www.google.com/maps/search/?api=1&query=" +
-  encodeURIComponent("KubaZuela on the Bay " + ADDRESS);
+import { useContent } from "@/lib/content";
 
 export function Reviews() {
+  const { reviews, contact } = useContent();
+  const GOOGLE_REVIEWS_URL =
+    "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent("KubaZuela on the Bay " + contact.address);
+
   return (
     <section id="opiniones" className="bg-paper">
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
@@ -13,12 +15,12 @@ export function Reviews() {
           </span>
           <div className="flex items-end gap-3">
             <span className="font-display text-6xl text-bay md:text-7xl">
-              5.0
+              {reviews.rating}
             </span>
             <div className="mb-1 text-left">
               <div className="text-mango-dark text-lg">★★★★★</div>
               <p className="font-mono text-xs uppercase tracking-widest text-ink/50">
-                8 reseñas en Google
+                {reviews.countLabel}
               </p>
             </div>
           </div>

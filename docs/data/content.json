@@ -1,0 +1,175 @@
+{
+  "hero": {
+    "ratingBadge": "5.0 · 8 reseñas en Google",
+    "subtitle": "Sabor latino auténtico en cada bocado: lo mejor de la cocina venezolana y cubana, preparada por encargo. Operamos exclusivamente con Delivery y Pick-up para que tu comida llegue siempre fresca, rápida y llena de sabor — solo escríbenos por texto o WhatsApp para pedir."
+  },
+  "about": {
+    "titleLine1": "Dos países,",
+    "titleLine2": "una sola mesa",
+    "body": "Auténtico sabor latino en cada bocado. Te llevamos a casa lo mejor de la cocina venezolana y cubana por encargo, o lo pasas a recoger tú mismo. Operamos exclusivamente con servicio de Delivery y Pick-up para garantizar que tu comida llegue siempre fresca y deliciosa."
+  },
+  "contact": {
+    "phoneDisplay": "(786) 307-7229",
+    "whatsappUrl": "https://wa.me/17863077229",
+    "address": "10341 Avelar Ridge Dr, Riverview, FL 33578"
+  },
+  "hours": {
+    "weekday": "Lunes a viernes · 4:00 pm – 10:00 pm",
+    "weekend": "Sábado y domingo · 10:00 am – 10:00 pm"
+  },
+  "reviews": {
+    "rating": "5.0",
+    "countLabel": "8 reseñas en Google"
+  },
+  "menu": {
+    "groups": [
+      {
+        "id": "pastichos",
+        "label": "Pastichos (Venezuelan-style lasagna)",
+        "note": "",
+        "items": [
+          {
+            "id": "pasticho-small",
+            "name": "Kukenantepuy Combo (Small)",
+            "desc": "Porción generosa de lasaña venezolana cremosa y casera, servida con un refresco. Alcanza para 1 persona con hambre.",
+            "price": "25",
+            "photo": "data/images/small.png"
+          },
+          {
+            "id": "pasticho-medium",
+            "name": "Mount Roraima Combo (Medium)",
+            "desc": "Bandeja grande de lasaña venezolana cremosa y casera, servida con 6 refrescos. Rinde para 6–8 personas.",
+            "price": "70",
+            "photo": "data/images/medium.png"
+          },
+          {
+            "id": "pasticho-large",
+            "name": "Auyantepuy Combo (Large)",
+            "desc": "Bandeja extra grande de lasaña venezolana cremosa y quesuda, servida con 12 refrescos. Rinde para 10–12 personas.",
+            "price": "115",
+            "photo": "data/images/large.png"
+          }
+        ]
+      },
+      {
+        "id": "arroz-imperial",
+        "label": "Home-made Cuban Imperial Rice",
+        "note": "",
+        "items": [
+          {
+            "id": "cuban-rice",
+            "name": "Cuban Imperial Rice Combo",
+            "desc": "Bandeja generosa de arroz imperial cubano, en capas con pollo, queso, mayonesa y especias, servida con 8 refrescos.",
+            "price": "60",
+            "photo": "data/images/cuban-rice.png"
+          }
+        ]
+      },
+      {
+        "id": "empanadas",
+        "label": "Venezuelan Empanadas",
+        "note": "6 in (15 cm), masa de maíz crujiente",
+        "items": [
+          {
+            "id": "emp-queso",
+            "name": "Cheese (Queso)",
+            "desc": "Rellena de queso blanco derretido.",
+            "price": "4",
+            "photo": "data/images/queso.png"
+          },
+          {
+            "id": "emp-jamon",
+            "name": "Ham & Cheese (Jamón y queso)",
+            "desc": "Clásica y reconfortante — jamón y queso derretido.",
+            "price": "4",
+            "photo": "data/images/jamon.png"
+          },
+          {
+            "id": "emp-tajada",
+            "name": "Sweet Plantain & Cheese (Tajada con queso)",
+            "desc": "Plátano maduro dulce con queso blanco derretido.",
+            "price": "4",
+            "photo": "data/images/tajada.png"
+          },
+          {
+            "id": "emp-mechada",
+            "name": "Shredded Beef (Mechada)",
+            "desc": "Carne mechada venezolana cocinada a fuego lento, con especias tradicionales.",
+            "price": "5",
+            "photo": "data/images/mechada.png"
+          },
+          {
+            "id": "emp-molida",
+            "name": "Ground Beef (Molida)",
+            "desc": "Carne molida sazonada con cebolla, pimentón y especias suaves.",
+            "price": "4.50",
+            "photo": "data/images/molida.png"
+          },
+          {
+            "id": "emp-pollo",
+            "name": "Chicken (Pollo)",
+            "desc": "Pollo desmechado, sazonado al estilo venezolano.",
+            "price": "4",
+            "photo": "data/images/pollo.png"
+          },
+          {
+            "id": "emp-salchicha",
+            "name": "Sausage & Cheese (Salchicha con queso)",
+            "desc": "Salchicha en rodajas con queso gouda derretido.",
+            "price": "4",
+            "photo": "data/images/salchicha.png"
+          }
+        ]
+      },
+      {
+        "id": "pan-de-jamon",
+        "label": "Venezuelan Ham Bread (Pan de Jamón)",
+        "note": "",
+        "items": [
+          {
+            "id": "pan-jamon-medium",
+            "name": "Medium (11 in)",
+            "desc": "Masa suave y ligeramente dulce, rellena de jamón, tocineta, queso crema, aceitunas y pasas.",
+            "price": "20",
+            "photo": "data/images/pan-medium.png"
+          },
+          {
+            "id": "pan-jamon-large",
+            "name": "Large (17 in)",
+            "desc": "Nuestro clásico Pan de Jamón en tamaño grande — esponjoso, ligeramente dulce, relleno de jamón, tocineta, queso crema, aceitunas y pasas.",
+            "price": "30",
+            "photo": "data/images/pan-large.png"
+          }
+        ]
+      },
+      {
+        "id": "postres",
+        "label": "Desserts (Postres)",
+        "note": "",
+        "items": [
+          {
+            "id": "postre-marquesa",
+            "name": "Venezuelan Marquesa",
+            "desc": "Postre frío y cremoso, hecho con capas de galletas dulces y una suave crema de Nutella.",
+            "price": "25",
+            "photo": "data/images/marquesa.png"
+          },
+          {
+            "id": "postre-cheesecake",
+            "name": "Churro Cheesecake with Nutella & Strawberries",
+            "desc": "Cheesecake cremoso con base estilo churro, cubierto con Nutella y fresas frescas.",
+            "price": "40",
+            "photo": "data/images/cheesecake.png"
+          },
+          {
+            "id": "postre-chocoflan",
+            "name": "Chocoflan",
+            "desc": "Capas de bizcocho de chocolate y flan de caramelo. Dulce, suave y perfecto para compartir.",
+            "price": "40",
+            "photo": ""
+          }
+        ]
+      }
+    ]
+  }
+}

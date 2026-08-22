@@ -1,4 +1,7 @@
+import { useContent } from "@/lib/content";
+
 export function About() {
+  const { about } = useContent();
   return (
     <section className="bg-paper">
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
@@ -8,16 +11,12 @@ export function About() {
               Nuestra cocina
             </span>
             <h2 className="mt-3 font-display text-4xl uppercase leading-[0.95] text-ink md:text-5xl">
-              Dos países,
+              {about.titleLine1}
               <br />
-              <span className="text-bay">una sola mesa</span>
+              <span className="text-bay">{about.titleLine2}</span>
             </h2>
             <p className="mt-5 max-w-lg font-body text-ink/70">
-              Auténtico sabor latino en cada bocado. Te llevamos a casa lo
-              mejor de la cocina venezolana y cubana por encargo, o lo pasas a
-              recoger tú mismo. Operamos exclusivamente con servicio de
-              Delivery y Pick-up para garantizar que tu comida llegue siempre
-              fresca y deliciosa.
+              {about.body}
             </p>
           </div>
 
