@@ -166,7 +166,7 @@
             "name": "Chocoflan",
             "desc": "Capas de bizcocho de chocolate y flan de caramelo. Dulce, suave y perfecto para compartir.",
             "price": "40",
-            "photo": ""
+            "photo": "data/images/postre-chocoflan.png"
           }
         ]
       }
