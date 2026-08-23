@@ -33,7 +33,7 @@
             "name": "Kukenantepuy Combo (Small)",
             "desc": "Porción generosa de lasaña venezolana cremosa y casera, servida con un refresco. Alcanza para 1 persona con hambre.",
             "price": "25",
-            "photo": "data/images/small.png"
+            "photo": "data/images/pasticho-small.png"
           },
           {
             "id": "pasticho-medium",
