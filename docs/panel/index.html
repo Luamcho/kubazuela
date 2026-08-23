@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KubaZuela — Panel de administración</title>
+<style>
+  :root {
+    --bay: #023047;
+    --bay-dark: #011E2D;
+    --bay-light: #0A4A66;
+    --mango: #FFB703;
+    --mango-dark: #D99A02;
+    --plantain: #372C8C;
+    --lilac: #A79FE3;
+    --paper: #FBF6EA;
+    --ink: #1B1B1B;
+    --danger: #C1432B;
+    --ok: #2E7D4F;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  #app { max-width: 780px; margin: 0 auto; padding: 24px 16px 80px; }
+  .gate {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 16px;
+    padding: 24px;
+  }
+  .logo-badge {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--bay-dark); color: var(--mango);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 20px; letter-spacing: -1px;
+  }
+  h1 { font-size: 22px; margin: 4px 0; color: var(--bay-dark); }
+  .subtitle { color: #6b6b66; font-size: 14px; max-width: 340px; margin: 0 0 8px; }
+  input[type="password"], input[type="text"], input[type="number"], textarea {
+    width: 100%;
+    border: 1px solid #d8d3c4;
+    border-radius: 10px;
+    padding: 11px 13px;
+    font-size: 15px;
+    background: #fff;
+    color: var(--ink);
+    font-family: inherit;
+  }
+  textarea { resize: vertical; min-height: 64px; }
+  input:focus, textarea:focus { outline: 2px solid var(--mango); outline-offset: 1px; }
+  .gate-form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 10px; }
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 999px;
+    padding: 11px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--mango); color: var(--bay-dark); }
+  .btn-primary:hover { background: var(--mango-dark); }
+  .btn-primary:disabled { background: #ddd; color: #999; cursor: not-allowed; }
+  .btn-ghost { background: transparent; border: 1px solid var(--bay); color: var(--bay); }
+  .btn-ghost:hover { background: rgba(2,48,71,0.06); }
+  .btn-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 6px 12px; font-size: 12px; }
+  .btn-danger:hover { background: rgba(193,67,43,0.08); }
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
+  .error-box {
+    background: #FBE9E5; color: var(--danger); border-radius: 10px;
+    padding: 10px 14px; font-size: 13px; text-align: left; width: 100%; max-width: 320px;
+  }
+  .help-text { font-size: 12px; color: #837f70; text-align: left; max-width: 320px; line-height: 1.5; }
+  .help-text a { color: var(--bay); }
+
+  header.topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bay-dark); color: var(--paper);
+    padding: 14px 18px; border-radius: 14px; margin-bottom: 18px;
+    position: sticky; top: 8px; z-index: 5;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .topbar-title { font-weight: 700; font-size: 15px; }
+  .topbar-sub { font-size: 11px; color: var(--lilac); text-transform: uppercase; letter-spacing: 0.06em; }
+  .topbar button { font-size: 12px; }
+
+  nav.tabs {
+    display: flex; gap: 6px; overflow-x: auto; margin-bottom: 20px;
+    padding-bottom: 2px;
+  }
+  nav.tabs button {
+    background: #fff; border: 1px solid #e3ddc9; color: #6b6b66;
+    white-space: nowrap; font-weight: 600; font-size: 13px;
+  }
+  nav.tabs button.active { background: var(--bay-dark); color: var(--mango); border-color: var(--bay-dark); }
+
+  .card {
+    background: #fff; border: 1px solid #ece6d4; border-radius: 14px;
+    padding: 18px; margin-bottom: 16px;
+  }
+  .card h2 { font-size: 16px; margin: 0 0 4px; color: var(--bay-dark); }
+  .card .hint { font-size: 12px; color: #918d7e; margin: 0 0 14px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--bay); margin-bottom: 5px; }
+  .row2 { display: grid; grid-template-columns: 1fr 100px; gap: 10px; }
+
+  .group-block { border: 1px solid #ece6d4; border-radius: 12px; padding: 14px; margin-bottom: 14px; background: #fffdf7; }
+  .group-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+  .group-head input { font-weight: 700; font-size: 15px; border: none; background: transparent; padding: 4px 0; }
+  .group-head input:focus { outline: none; border-bottom: 1px solid var(--mango); }
+
+  .item-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 10px;
+    align-items: start;
+    padding: 10px 0;
+    border-top: 1px dashed #e6e0cc;
+  }
+  .item-row:first-of-type { border-top: none; }
+  .thumb {
+    width: 56px; height: 56px; border-radius: 8px; object-fit: cover;
+    background: #eee6cf; display: block; cursor: pointer; border: 1px solid #e0d9c2;
+  }
+  .thumb-empty {
+    width: 56px; height: 56px; border-radius: 8px; background: #eee6cf;
+    display: flex; align-items: center; justify-content: center; font-size: 10px;
+    color: #9c9679; text-align: center; cursor: pointer; border: 1px dashed #cbc4a8;
+  }
+  .item-fields input, .item-fields textarea { margin-bottom: 6px; }
+  .item-fields .name-price { display: grid; grid-template-columns: 1fr 90px; gap: 8px; }
+  .item-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+  .file-input { display: none; }
+
+  .add-btn {
+    width: 100%; background: #f4f0e2; border: 1px dashed #cbc4a8; color: var(--bay);
+    font-size: 13px; padding: 9px; border-radius: 10px; font-weight: 600;
+  }
+  .add-btn:hover { background: #ece6d0; }
+
+  .publish-bar {
+    position: sticky; bottom: 12px; margin-top: 20px;
+    background: var(--bay-dark); border-radius: 14px; padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    box-shadow: 0 6px 24px rgba(1,30,45,0.25);
+  }
+  .publish-status { font-size: 12px; color: var(--paper); opacity: 0.85; flex: 1; }
+  .publish-status.ok { color: #8CE0AE; opacity: 1; }
+  .publish-status.err { color: #FFB3A3; opacity: 1; }
+  .spinner {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.35); border-top-color: var(--mango);
+    display: inline-block; vertical-align: -2px; margin-right: 6px;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .pending-dot {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--mango); margin-left: 6px;
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var OWNER = "Luamcho";
+  var REPO = "kubazuela";
+  var BRANCH = "main";
+  var API = "https://api.github.com";
+  var SITE_URL = "https://luamcho.github.io/kubazuela/";
+  var DASH_PASSWORD = "kubazuela2026";
+
+  var state = {
+    screen: "password",
+    passwordInput: "",
+    passwordError: "",
+    token: "",
+    tokenError: "",
+    loadingContent: false,
+    content: null,
+    shaPublic: null,
+    shaDocs: null,
+    activeTab: "menu",
+    pendingImages: {},
+    imagePreviews: {},
+    publishing: false,
+    publishMessage: "",
+    publishState: ""
+  };
+
+  function utf8ToBase64(str) {
+    var bytes = new TextEncoder().encode(str);
+    var binary = "";
+    for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary);
+  }
+  function base64ToUtf8(b64) {
+    var binary = atob(b64.replace(/\n/g, ""));
+    var bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  function fileToBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(reader.result.split(",")[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+  function slugify(str) {
+    return (str || "item")
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "") || "item";
+  }
+  function uid() { return Math.random().toString(36).slice(2, 8); }
+
+  async function ghGet(path) {
+    var res = await fetch(API + "/repos/" + OWNER + "/" + REPO + "/contents/" + path + "?ref=" + BRANCH, {
+      headers: { Authorization: "Bearer " + state.token, Accept: "application/vnd.github+json" }
+    });
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error("No se pudo leer " + path + " (" + res.status + ")");
+    return res.json();
+  }
+
+  async function ghPut(path, base64Content, sha, message) {
+    var body = { message: message, content: base64Content, branch: BRANCH };
+    if (sha) body.sha = sha;
+    var res = await fetch(API + "/repos/" + OWNER + "/" + REPO + "/contents/" + path, {
+      method: "PUT",
+      headers: {
+        Authorization: "Bearer " + state.token,
+        Accept: "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      var err = await res.json().catch(function () { return {}; });
+      throw new Error(err.message || ("Error al guardar " + path + " (" + res.status + ")"));
+    }
+    return res.json();
+  }
+
+  async function loadContent() {
+    state.loadingContent = true;
+    state.tokenError = "";
+    render();
+    try {
+      var pub = await ghGet("public/data/content.json");
+      var docs = await ghGet("docs/data/content.json");
+      if (!pub) throw new Error("No se encontró public/data/content.json en el repo.");
+      state.content = JSON.parse(base64ToUtf8(pub.content));
+      state.shaPublic = pub.sha;
+      state.shaDocs = docs ? docs.sha : null;
+      state.screen = "dashboard";
+    } catch (e) {
+      state.tokenError = e.message || "No se pudo conectar con GitHub. Revisa el token.";
+    }
+    state.loadingContent = false;
+    render();
+  }
+
+  async function publishAll() {
+    state.publishing = true;
+    state.publishState = "";
+    state.publishMessage = "Subiendo cambios…";
+    render();
+    try {
+      var imageIds = Object.keys(state.pendingImages);
+      for (var i = 0; i < imageIds.length; i++) {
+        var itemId = imageIds[i];
+        var file = state.pendingImages[itemId];
+        state.publishMessage = "Subiendo imagen " + (i + 1) + " de " + imageIds.length + "…";
+        render();
+        var ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+        var filename = itemId + "." + ext;
+        var b64 = await fileToBase64(file);
+        var imgPathPublic = "public/data/images/" + filename;
+        var imgPathDocs = "docs/data/images/" + filename;
+        var existingPub = await ghGet(imgPathPublic);
+        await ghPut(imgPathPublic, b64, existingPub ? existingPub.sha : null, "Actualiza foto: " + filename);
+        var existingDocs = await ghGet(imgPathDocs);
+        await ghPut(imgPathDocs, b64, existingDocs ? existingDocs.sha : null, "Actualiza foto: " + filename);
+        var item = findItemById(itemId);
+        if (item) item.photo = "data/images/" + filename;
+      }
+
+      state.publishMessage = "Guardando contenido…";
+      render();
+      var jsonStr = JSON.stringify(state.content, null, 2);
+      var jsonB64 = utf8ToBase64(jsonStr);
+      var resPub = await ghPut("public/data/content.json", jsonB64, state.shaPublic, "Actualiza contenido del sitio desde el panel de administración");
+      state.shaPublic = resPub.content.sha;
+      var resDocs = await ghPut("docs/data/content.json", jsonB64, state.shaDocs, "Actualiza contenido del sitio desde el panel de administración");
+      state.shaDocs = resDocs.content.sha;
+
+      state.pendingImages = {};
+      state.imagePreviews = {};
+      state.publishState = "ok";
+      state.publishMessage = "Publicado. Los cambios estarán visibles en el sitio en unos segundos.";
+    } catch (e) {
+      state.publishState = "err";
+      state.publishMessage = e.message || "Ocurrió un error al publicar.";
+    }
+    state.publishing = false;
+    render();
+  }
+
+  function findItemById(id) {
+    if (!state.content) return null;
+    for (var g = 0; g < state.content.menu.groups.length; g++) {
+      var items = state.content.menu.groups[g].items;
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].id === id) return items[i];
+      }
+    }
+    return null;
+  }
+
+  function addGroup() {
+    state.content.menu.groups.push({ id: "grupo-" + uid(), label: "Nuevo grupo", note: "", items: [] });
+    render();
+  }
+  function removeGroup(gi) {
+    if (!confirm("¿Eliminar este grupo completo del menú?")) return;
+    state.content.menu.groups.splice(gi, 1);
+    render();
+  }
+  function addItem(gi) {
+    var id = "platillo-" + uid();
+    state.content.menu.groups[gi].items.push({ id: id, name: "Nuevo platillo", desc: "", price: "0", photo: "" });
+    render();
+  }
+  function removeItem(gi, ii) {
+    state.content.menu.groups[gi].items.splice(ii, 1);
+    render();
+  }
+  function onImageChosen(itemId, fileList) {
+    if (!fileList || !fileList[0]) return;
+    var file = fileList[0];
+    state.pendingImages[itemId] = file;
+    state.imagePreviews[itemId] = URL.createObjectURL(file);
+    render();
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function renderPasswordScreen() {
+    return (
+      '<div class="gate">' +
+        '<div class="logo-badge">KZ</div>' +
+        '<h1>Panel de administración</h1>' +
+        '<p class="subtitle">KubaZuela on the Bay — edita el menú, precios, fotos, horario y textos del sitio.</p>' +
+        '<div class="gate-form">' +
+          (state.passwordError ? '<div class="error-box">' + esc(state.passwordError) + '</div>' : '') +
+          '<input type="password" id="pw-input" placeholder="Contraseña del panel" autocomplete="off" />' +
+          '<button class="btn-primary" id="pw-submit">Entrar</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderTokenScreen() {
+    return (
+      '<div class="gate">' +
+        '<div class="logo-badge">KZ</div>' +
+        '<h1>Conectar con GitHub</h1>' +
+        '<p class="subtitle">Pega tu token de acceso personal para poder publicar cambios en el repositorio.</p>' +
+        '<div class="gate-form">' +
+          (state.tokenError ? '<div class="error-box">' + esc(state.tokenError) + '</div>' : '') +
+          '<input type="password" id="token-input" placeholder="github_pat_…" autocomplete="off" />' +
+          '<button class="btn-primary" id="token-submit" ' + (state.loadingContent ? "disabled" : "") + '>' +
+            (state.loadingContent ? '<span class="spinner"></span>Conectando…' : 'Cargar contenido actual') +
+          '</button>' +
+        '</div>' +
+        '<p class="help-text">El token no se guarda: solo vive en esta pestaña mientras la tengas abierta. Usa uno de tipo fine-grained, limitado al repositorio <b>kubazuela</b> con permiso <b>Contents: Read and write</b>. Puedes crear uno en <a href="#" id="token-help-link">github.com/settings/personal-access-tokens/new</a>.</p>' +
+      '</div>'
+    );
+  }
+
+  function renderTopbar() {
+    return (
+      '<header class="topbar">' +
+        '<div class="topbar-left">' +
+          '<div class="logo-badge" style="width:38px;height:38px;font-size:14px;">KZ</div>' +
+          '<div><div class="topbar-title">Panel — KubaZuela on the Bay</div><div class="topbar-sub">Editando en vivo</div></div>' +
+        '</div>' +
+        '<button class="btn-ghost btn-sm" id="logout-btn" style="color:#FBF6EA;border-color:rgba(251,246,234,0.4);">Salir</button>' +
+      '</header>'
+    );
+  }
+
+  function renderTabs() {
+    var tabs = [
+      { id: "menu", label: "Menú" },
+      { id: "hours", label: "Horario y contacto" },
+      { id: "texts", label: "Textos (Hero / Nosotros)" },
+      { id: "reviews", label: "Reseñas" }
+    ];
+    var html = '<nav class="tabs">';
+    tabs.forEach(function (t) {
+      html += '<button data-tab="' + t.id + '" class="' + (state.activeTab === t.id ? "active" : "") + '">' + t.label + '</button>';
+    });
+    html += '</nav>';
+    return html;
+  }
+
+  function renderMenuTab() {
+    var c = state.content;
+    var html = "";
+    c.menu.groups.forEach(function (group, gi) {
+      html += '<div class="group-block">';
+      html += '<div class="group-head">';
+      html += '<input type="text" value="' + esc(group.label) + '" data-group-label="' + gi + '" placeholder="Nombre del grupo" />';
+      html += '<button class="btn-danger" data-remove-group="' + gi + '">Eliminar grupo</button>';
+      html += '</div>';
+
+      group.items.forEach(function (item, ii) {
+        var previewSrc = state.imagePreviews[item.id] || item.photo || "";
+        html += '<div class="item-row">';
+        html += '<div>';
+        if (previewSrc) {
+          html += '<img class="thumb" src="' + esc(previewSrc) + '" data-pick-photo="' + item.id + '" title="Cambiar foto" />';
+        } else {
+          html += '<div class="thumb-empty" data-pick-photo="' + item.id + '">Sin foto</div>';
+        }
+        if (state.pendingImages[item.id]) html += '<span class="pending-dot" title="Foto pendiente de publicar"></span>';
+        html += '<input type="file" accept="image/*" class="file-input" id="file-' + item.id + '" data-file-for="' + item.id + '" />';
+        html += '</div>';
+        html += '<div class="item-fields">';
+        html += '<div class="name-price">';
+        html += '<input type="text" value="' + esc(item.name) + '" placeholder="Nombre del platillo" data-item-field="name" data-gi="' + gi + '" data-ii="' + ii + '" />';
+        html += '<input type="text" value="' + esc(item.price) + '" placeholder="Precio" data-item-field="price" data-gi="' + gi + '" data-ii="' + ii + '" />';
+        html += '</div>';
+        html += '<textarea placeholder="Descripción" data-item-field="desc" data-gi="' + gi + '" data-ii="' + ii + '">' + esc(item.desc) + '</textarea>';
+        html += '</div>';
+        html += '<div class="item-actions"><button class="btn-danger" data-remove-item="' + gi + ':' + ii + '">Eliminar</button></div>';
+        html += '</div>';
+      });
+
+      html += '<button class="add-btn" data-add-item="' + gi + '" style="margin-top:8px;">+ Agregar platillo a este grupo</button>';
+      html += '</div>';
+    });
+    html += '<button class="add-btn" id="add-group-btn">+ Agregar nuevo grupo del menú</button>';
+    return html;
+  }
+
+  function renderHoursTab() {
+    var c = state.content;
+    return (
+      '<div class="card">' +
+        '<h2>Horario</h2>' +
+        '<p class="hint">Se muestra tal cual en la sección de pedidos.</p>' +
+        '<div class="field"><label>Días de semana</label><input type="text" id="hours-weekday" value="' + esc(c.hours.weekday) + '" /></div>' +
+        '<div class="field"><label>Fin de semana</label><input type="text" id="hours-weekend" value="' + esc(c.hours.weekend) + '" /></div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<h2>Contacto</h2>' +
+        '<div class="field"><label>Teléfono (texto mostrado)</label><input type="text" id="contact-phone" value="' + esc(c.contact.phoneDisplay) + '" /></div>' +
+        '<div class="field"><label>Enlace de WhatsApp</label><input type="text" id="contact-whatsapp" value="' + esc(c.contact.whatsappUrl) + '" /></div>' +
+        '<div class="field"><label>Dirección</label><input type="text" id="contact-address" value="' + esc(c.contact.address) + '" /></div>' +
+      '</div>'
+    );
+  }
+
+  function renderTextsTab() {
+    var c = state.content;
+    return (
+      '<div class="card">' +
+        '<h2>Hero (portada)</h2>' +
+        '<div class="field"><label>Insignia de calificación</label><input type="text" id="hero-badge" value="' + esc(c.hero.ratingBadge) + '" /></div>' +
+        '<div class="field"><label>Texto principal</label><textarea id="hero-subtitle" rows="4">' + esc(c.hero.subtitle) + '</textarea></div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<h2>Nosotros</h2>' +
+        '<div class="row2" style="margin-bottom:12px;">' +
+          '<div class="field" style="margin-bottom:0;"><label>Título línea 1</label><input type="text" id="about-l1" value="' + esc(c.about.titleLine1) + '" /></div>' +
+          '<div class="field" style="margin-bottom:0;"><label>Título línea 2</label><input type="text" id="about-l2" value="' + esc(c.about.titleLine2) + '" /></div>' +
+        '</div>' +
+        '<div class="field"><label>Texto</label><textarea id="about-body" rows="4">' + esc(c.about.body) + '</textarea></div>' +
+      '</div>'
+    );
+  }
+
+  function renderReviewsTab() {
+    var c = state.content;
+    return (
+      '<div class="card">' +
+        '<h2>Reseñas</h2>' +
+        '<p class="hint">Este número refleja tu calificación real de Google — actualízalo cuando cambie.</p>' +
+        '<div class="row2">' +
+          '<div class="field" style="margin-bottom:0;"><label>Calificación</label><input type="text" id="reviews-rating" value="' + esc(c.reviews.rating) + '" /></div>' +
+          '<div class="field" style="margin-bottom:0;"><label>&nbsp;</label><input type="text" id="reviews-count" value="' + esc(c.reviews.countLabel) + '" placeholder="8 reseñas en Google" /></div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderDashboard() {
+    var body = "";
+    if (state.activeTab === "menu") body = renderMenuTab();
+    else if (state.activeTab === "hours") body = renderHoursTab();
+    else if (state.activeTab === "texts") body = renderTextsTab();
+    else if (state.activeTab === "reviews") body = renderReviewsTab();
+
+    var statusClass = state.publishState === "ok" ? "ok" : state.publishState === "err" ? "err" : "";
+
+    return (
+      renderTopbar() +
+      renderTabs() +
+      body +
+      '<div class="publish-bar">' +
+        '<div class="publish-status ' + statusClass + '">' +
+          (state.publishing ? '<span class="spinner"></span>' : '') +
+          esc(state.publishMessage || 'Los cambios se publican directo al sitio en GitHub.') +
+        '</div>' +
+        '<button class="btn-primary" id="publish-btn" ' + (state.publishing ? "disabled" : "") + '>' +
+          (state.publishing ? "Publicando…" : "Publicar cambios") +
+        '</button>' +
+      '</div>' +
+      '<p style="text-align:center;margin-top:14px;"><a href="' + SITE_URL + '" target="_blank" rel="noopener" style="font-size:12px;color:#6b6b66;">Ver sitio en vivo ↗</a></p>'
+    );
+  }
+
+  function render() {
+    var app = document.getElementById("app");
+    var html;
+    if (state.screen === "password") html = renderPasswordScreen();
+    else if (state.screen === "token") html = renderTokenScreen();
+    else html = renderDashboard();
+    app.innerHTML = html;
+    wireEvents();
+  }
+
+  function wireEvents() {
+    var pwSubmit = document.getElementById("pw-submit");
+    if (pwSubmit) {
+      pwSubmit.addEventListener("click", function () {
+        var val = document.getElementById("pw-input").value;
+        if (val === DASH_PASSWORD) {
+          state.passwordError = "";
+          state.screen = "token";
+          render();
+        } else {
+          state.passwordError = "Contraseña incorrecta.";
+          render();
+        }
+      });
+      var pwInput = document.getElementById("pw-input");
+      pwInput.addEventListener("keydown", function (e) { if (e.key === "Enter") pwSubmit.click(); });
+      pwInput.focus();
+    }
+
+    var tokenSubmit = document.getElementById("token-submit");
+    if (tokenSubmit) {
+      tokenSubmit.addEventListener("click", function () {
+        var val = document.getElementById("token-input").value.trim();
+        if (!val) { state.tokenError = "Ingresa un token válido."; render(); return; }
+        state.token = val;
+        loadContent();
+      });
+      var tokenInput = document.getElementById("token-input");
+      tokenInput.addEventListener("keydown", function (e) { if (e.key === "Enter") tokenSubmit.click(); });
+      var helpLink = document.getElementById("token-help-link");
+      if (helpLink) helpLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.open("https://github.com/settings/personal-access-tokens/new", "_blank");
+      });
+    }
+
+    var logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) logoutBtn.addEventListener("click", function () {
+      if (!confirm("¿Salir? Perderás los cambios sin publicar.")) return;
+      state = {
+        screen: "password", passwordInput: "", passwordError: "", token: "", tokenError: "",
+        loadingContent: false, content: null, shaPublic: null, shaDocs: null, activeTab: "menu",
+        pendingImages: {}, imagePreviews: {}, publishing: false, publishMessage: "", publishState: ""
+      };
+      render();
+    });
+
+    document.querySelectorAll("[data-tab]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.activeTab = btn.getAttribute("data-tab");
+        render();
+      });
+    });
+
+    document.querySelectorAll("[data-group-label]").forEach(function (input) {
+      input.addEventListener("input", function () {
+        var gi = parseInt(input.getAttribute("data-group-label"), 10);
+        state.content.menu.groups[gi].label = input.value;
+      });
+    });
+    document.querySelectorAll("[data-remove-group]").forEach(function (btn) {
+      btn.addEventListener("click", function () { removeGroup(parseInt(btn.getAttribute("data-remove-group"), 10)); });
+    });
+    document.querySelectorAll("[data-add-item]").forEach(function (btn) {
+      btn.addEventListener("click", function () { addItem(parseInt(btn.getAttribute("data-add-item"), 10)); });
+    });
+    var addGroupBtn = document.getElementById("add-group-btn");
+    if (addGroupBtn) addGroupBtn.addEventListener("click", addGroup);
+
+    document.querySelectorAll("[data-item-field]").forEach(function (el) {
+      el.addEventListener("input", function () {
+        var gi = parseInt(el.getAttribute("data-gi"), 10);
+        var ii = parseInt(el.getAttribute("data-ii"), 10);
+        var field = el.getAttribute("data-item-field");
+        state.content.menu.groups[gi].items[ii][field] = el.value;
+      });
+    });
+    document.querySelectorAll("[data-remove-item]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var parts = btn.getAttribute("data-remove-item").split(":");
+        removeItem(parseInt(parts[0], 10), parseInt(parts[1], 10));
+      });
+    });
+
+    document.querySelectorAll("[data-pick-photo]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        var id = el.getAttribute("data-pick-photo");
+        document.getElementById("file-" + id).click();
+      });
+    });
+    document.querySelectorAll("[data-file-for]").forEach(function (el) {
+      el.addEventListener("change", function () {
+        onImageChosen(el.getAttribute("data-file-for"), el.files);
+      });
+    });
+
+    bindSimple("hours-weekday", function (v) { state.content.hours.weekday = v; });
+    bindSimple("hours-weekend", function (v) { state.content.hours.weekend = v; });
+    bindSimple("contact-phone", function (v) { state.content.contact.phoneDisplay = v; });
+    bindSimple("contact-whatsapp", function (v) { state.content.contact.whatsappUrl = v; });
+    bindSimple("contact-address", function (v) { state.content.contact.address = v; });
+    bindSimple("hero-badge", function (v) { state.content.hero.ratingBadge = v; });
+    bindSimple("hero-subtitle", function (v) { state.content.hero.subtitle = v; });
+    bindSimple("about-l1", function (v) { state.content.about.titleLine1 = v; });
+    bindSimple("about-l2", function (v) { state.content.about.titleLine2 = v; });
+    bindSimple("about-body", function (v) { state.content.about.body = v; });
+    bindSimple("reviews-rating", function (v) { state.content.reviews.rating = v; });
+    bindSimple("reviews-count", function (v) { state.content.reviews.countLabel = v; });
+
+    var publishBtn = document.getElementById("publish-btn");
+    if (publishBtn) publishBtn.addEventListener("click", publishAll);
+  }
+
+  function bindSimple(id, setter) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener("input", function () { setter(el.value); });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
