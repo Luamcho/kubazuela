@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
@@ -18,6 +19,7 @@ function App() {
       <>
         <Gallery onSection={goToSection} onGallery={() => goTo("galeria")} />
         <Analytics />
+        <SpeedInsights />
       </>
     );
   }
@@ -33,6 +35,7 @@ function App() {
       <OrderSection />
       <Footer />
       <Analytics />
+      <SpeedInsights />
     </div>
   );
 }
