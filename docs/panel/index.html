@@ -114,6 +114,11 @@
   .field { margin-bottom: 12px; }
   .field label { display: block; font-size: 12px; font-weight: 600; color: var(--bay); margin-bottom: 5px; }
   .row2 { display: grid; grid-template-columns: 1fr 100px; gap: 10px; }
+  .row-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row-narrow-first { display: grid; grid-template-columns: 110px 1fr; gap: 10px; }
+  @media (max-width: 480px) {
+    .row-equal, .row-narrow-first { grid-template-columns: 1fr; }
+  }
 
   .group-block { border: 1px solid #ece6d4; border-radius: 12px; padding: 14px; margin-bottom: 14px; background: #fffdf7; }
   .group-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
@@ -502,7 +507,7 @@
       '</div>' +
       '<div class="card">' +
         '<h2>Nosotros</h2>' +
-        '<div class="row2" style="margin-bottom:12px;">' +
+        '<div class="row-equal" style="margin-bottom:12px;">' +
           '<div class="field" style="margin-bottom:0;"><label>Título línea 1</label><input type="text" id="about-l1" value="' + esc(c.about.titleLine1) + '" /></div>' +
           '<div class="field" style="margin-bottom:0;"><label>Título línea 2</label><input type="text" id="about-l2" value="' + esc(c.about.titleLine2) + '" /></div>' +
         '</div>' +
@@ -517,9 +522,9 @@
       '<div class="card">' +
         '<h2>Reseñas</h2>' +
         '<p class="hint">Este número refleja tu calificación real de Google — actualízalo cuando cambie.</p>' +
-        '<div class="row2">' +
+        '<div class="row-narrow-first">' +
           '<div class="field" style="margin-bottom:0;"><label>Calificación</label><input type="text" id="reviews-rating" value="' + esc(c.reviews.rating) + '" /></div>' +
-          '<div class="field" style="margin-bottom:0;"><label>&nbsp;</label><input type="text" id="reviews-count" value="' + esc(c.reviews.countLabel) + '" placeholder="8 reseñas en Google" /></div>' +
+          '<div class="field" style="margin-bottom:0;"><label>Texto</label><input type="text" id="reviews-count" value="' + esc(c.reviews.countLabel) + '" placeholder="8 reseñas en Google" /></div>' +
         '</div>' +
       '</div>'
     );
