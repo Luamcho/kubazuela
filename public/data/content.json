@@ -62,13 +62,6 @@
             "desc": "Bandeja generosa de arroz imperial cubano, en capas con pollo, queso, mayonesa y especias, servida con 8 refrescos.",
             "price": "60",
             "photo": "data/images/cuban-rice.png"
-          },
-          {
-            "id": "platillo-29npd4",
-            "name": "Nuevo platillo",
-            "desc": "nuevo",
-            "price": "100",
-            "photo": "data/images/platillo-29npd4.png"
           }
         ]
       },
