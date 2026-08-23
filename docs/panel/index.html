@@ -417,7 +417,7 @@
       '<header class="topbar">' +
         '<div class="topbar-left">' +
           '<img class="logo-img-sm" src="' + LOGO_URI + '" alt="KubaZuela" />' +
-          '<div><div class="topbar-title">Panel — KubaZuela on the Bay</div><div class="topbar-sub">Editando en vivo</div></div>' +
+          '<div><div class="topbar-title">Panel — KubaZuela on the Bay</div><a href="' + SITE_URL + '" target="_blank" rel="noopener" class="topbar-sub" style="text-decoration:none;">Sitio web en vivo ↗</a></div></div>' +
         '</div>' +
         '<button class="btn-ghost btn-sm" id="logout-btn" style="color:#FBF6EA;border-color:rgba(251,246,234,0.4);">Salir</button>' +
       '</header>'
@@ -546,7 +546,7 @@
       '<div class="publish-bar">' +
         '<div class="publish-status ' + statusClass + '">' +
           (state.publishing ? '<span class="spinner"></span>' : '') +
-          esc(state.publishMessage || 'Los cambios se publican directo al sitio en GitHub.') +
+          esc(state.publishMessage || 'Los cambios se publican directo al sitio.') +
         '</div>' +
         '<button class="btn-primary" id="publish-btn" ' + (state.publishing ? "disabled" : "") + '>' +
           (state.publishing ? "Publicando…" : "Publicar cambios") +
