@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { scrollToId } from "@/lib/scroll";
 
 export function useHashPage() {
   const [page, setPage] = useState(() =>
@@ -20,5 +21,19 @@ export function useHashPage() {
     window.scrollTo({ top: 0 });
   };
 
-  return { page, goTo };
+  // Navigate to the home page and scroll to a specific section within it.
+  // Used so the nav bar can jump straight to a section even from other pages.
+  const goToSection = (id: string) => {
+    if (id === "top") {
+      goTo("inicio");
+      return;
+    }
+    window.location.hash = "";
+    setPage("inicio");
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => scrollToId(id));
+    });
+  };
+
+  return { page, goTo, goToSection };
 }

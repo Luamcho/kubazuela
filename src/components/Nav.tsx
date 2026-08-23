@@ -1,6 +1,5 @@
 import { useState } from "react";
 import logo from "@/assets/logo";
-import { scrollToId } from "@/lib/scroll";
 import { useContent } from "@/lib/content";
 
 const links = [
@@ -11,17 +10,18 @@ const links = [
 ];
 
 interface NavProps {
+  onSection: (id: string) => void;
   onGallery: () => void;
 }
 
-export function Nav({ onGallery }: NavProps) {
+export function Nav({ onSection, onGallery }: NavProps) {
   const [open, setOpen] = useState(false);
   const { contact } = useContent();
   const WHATSAPP_URL = contact.whatsappUrl;
 
   const goTo = (id: string) => {
     setOpen(false);
-    scrollToId(id);
+    onSection(id);
   };
 
   const goToGallery = () => {

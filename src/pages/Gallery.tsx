@@ -1,41 +1,43 @@
 import logo from "@/assets/logo";
+import { Nav } from "@/components/Nav";
 import { useContent } from "@/lib/content";
 
-export function Gallery({ onBack }: { onBack: () => void }) {
+interface GalleryProps {
+  onSection: (id: string) => void;
+  onGallery: () => void;
+}
+
+export function Gallery({ onSection, onGallery }: GalleryProps) {
   const { menu, contact } = useContent();
   const groups = menu.groups;
   const WHATSAPP_URL = contact.whatsappUrl;
 
   return (
     <div className="min-h-screen bg-paper font-body">
-      <header className="sticky top-0 z-50 bg-bay-dark/95 backdrop-blur-sm border-b border-mango/20">
-        <div className="mx-auto max-w-6xl px-5 md:px-8 h-16 flex items-center justify-between">
-          <button type="button" onClick={onBack} className="flex items-center gap-3">
-            <img src={logo} alt="KubaZuela" className="h-10 w-auto" />
-          </button>
-          <button
-            type="button"
-            onClick={onBack}
-            className="inline-flex items-center gap-2 rounded-full border border-paper/30 px-4 py-2 font-body text-sm text-paper transition-colors hover:border-mango hover:text-mango"
-          >
-            ← Volver al inicio
-          </button>
-        </div>
-      </header>
+      <Nav onSection={onSection} onGallery={onGallery} />
 
       <section className="bg-bay-dark">
         <div className="mx-auto max-w-6xl px-5 py-14 text-center md:px-8 md:py-16">
-          <span className="font-mono text-xs uppercase tracking-widest text-mango">
-            Galería del menú
-          </span>
-          <h1 className="mt-2 font-display text-4xl uppercase text-paper md:text-5xl">
-            Todos nuestros platillos
-          </h1>
-          <p className="mx-auto mt-3 max-w-xl font-body text-sm text-paper/70">
-            Fotos reales de nuestros platillos, tal como aparecen en nuestro
-            perfil de Google. Toca "Realizar pedido" para pedir cualquiera
-            por WhatsApp.
-          </p>
+          <button
+            type="button"
+            onClick={() => onSection("top")}
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-paper/30 px-4 py-2 font-body text-sm text-paper transition-colors hover:border-mango hover:text-mango"
+          >
+            ← Volver al inicio
+          </button>
+          <div>
+            <span className="font-mono text-xs uppercase tracking-widest text-mango">
+              Galería del menú
+            </span>
+            <h1 className="mt-2 font-display text-4xl uppercase text-paper md:text-5xl">
+              Todos nuestros platillos
+            </h1>
+            <p className="mx-auto mt-3 max-w-xl font-body text-sm text-paper/70">
+              Fotos reales de nuestros platillos, tal como aparecen en nuestro
+              perfil de Google. Toca "Realizar pedido" para pedir cualquiera
+              por WhatsApp.
+            </p>
+          </div>
         </div>
       </section>
 

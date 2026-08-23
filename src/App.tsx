@@ -10,15 +10,17 @@ import { Gallery } from "@/pages/Gallery";
 import { useHashPage } from "@/lib/useHashPage";
 
 function App() {
-  const { page, goTo } = useHashPage();
+  const { page, goTo, goToSection } = useHashPage();
 
   if (page === "galeria") {
-    return <Gallery onBack={() => goTo("inicio")} />;
+    return (
+      <Gallery onSection={goToSection} onGallery={() => goTo("galeria")} />
+    );
   }
 
   return (
     <div className="min-h-screen bg-paper font-body">
-      <Nav onGallery={() => goTo("galeria")} />
+      <Nav onSection={goToSection} onGallery={() => goTo("galeria")} />
       <Hero />
       <About />
       <HowItWorks />
