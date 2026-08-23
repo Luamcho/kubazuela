@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
@@ -14,7 +15,10 @@ function App() {
 
   if (page === "galeria") {
     return (
-      <Gallery onSection={goToSection} onGallery={() => goTo("galeria")} />
+      <>
+        <Gallery onSection={goToSection} onGallery={() => goTo("galeria")} />
+        <Analytics />
+      </>
     );
   }
 
@@ -28,6 +32,7 @@ function App() {
       <Reviews />
       <OrderSection />
       <Footer />
+      <Analytics />
     </div>
   );
 }
