@@ -52,7 +52,7 @@ export function Nav({ onSection, onGallery }: NavProps) {
             onClick={goToGallery}
             className="rounded-full px-4 py-2 text-paper/80 transition-colors hover:bg-paper/10 hover:text-mango"
           >
-            Galería
+            Platillos
           </button>
         </nav>
 
@@ -104,7 +104,7 @@ export function Nav({ onSection, onGallery }: NavProps) {
             onClick={goToGallery}
             className="rounded-full px-4 py-2.5 text-left text-paper/80 transition-colors hover:bg-paper/10 hover:text-mango"
           >
-            Galería
+            Platillos
           </button>
         </nav>
       )}

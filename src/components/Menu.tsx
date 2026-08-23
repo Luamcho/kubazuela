@@ -64,7 +64,7 @@ export function Menu({ onSeeAll }: { onSeeAll?: () => void }) {
               onClick={onSeeAll}
               className="inline-flex items-center gap-2 rounded-full border border-paper/30 px-6 py-3 font-body font-semibold text-paper transition-colors hover:border-mango hover:text-mango"
             >
-              Ver galería completa con fotos
+              Ver todos los platillos con fotos
             </button>
           </div>
         )}

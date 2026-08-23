@@ -1,5 +1,5 @@
-import logo from "@/assets/logo";
 import { Nav } from "@/components/Nav";
+import { Footer } from "@/components/Footer";
 import { useContent } from "@/lib/content";
 
 interface GalleryProps {
@@ -27,7 +27,7 @@ export function Gallery({ onSection, onGallery }: GalleryProps) {
           </button>
           <div>
             <span className="font-mono text-xs uppercase tracking-widest text-mango">
-              Galería del menú
+              Nuestros platillos
             </span>
             <h1 className="mt-2 font-display text-4xl uppercase text-paper md:text-5xl">
               Todos nuestros platillos
@@ -99,11 +99,7 @@ export function Gallery({ onSection, onGallery }: GalleryProps) {
         </div>
       </section>
 
-      <footer className="bg-bay-dark border-t border-paper/10">
-        <div className="mx-auto max-w-6xl px-5 py-8 md:px-8 flex items-center justify-center">
-          <img src={logo} alt="KubaZuela" className="h-8 w-auto opacity-90" />
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
