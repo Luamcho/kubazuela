@@ -57,7 +57,7 @@ export function Gallery({ onSection, onGallery }: GalleryProps) {
                     {item.photo ? (
                       <img
                         src={item.photo}
-                        alt={item.name}
+                        alt={`${item.name} — KubaZuela, comida venezolana y cubana en Riverview FL`}
                         className="h-full w-full object-cover"
                       />
                     ) : (
