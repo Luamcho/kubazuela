@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && npm run prerender && npm run restore:panel",
+    "prerender": "node scripts/prerender.mjs",
+    "restore:panel": "git checkout HEAD -- docs/panel docs/CNAME",
     "lint": "oxlint",
     "preview": "vite preview"
   },
@@ -64,6 +66,7 @@
     "@vitejs/plugin-react": "^6.0.4",
     "autoprefixer": "^10.5.4",
     "html-inline": "^1.2.0",
+    "jsdom": "^30.0.1",
     "oxlint": "^1.75.0",
     "parcel": "^2.16.4",
     "parcel-resolver-tspaths": "^0.0.9",

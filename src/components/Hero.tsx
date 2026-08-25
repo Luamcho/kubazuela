@@ -22,6 +22,9 @@ export function Hero() {
           {hero.ratingBadge}
         </div>
 
+        <h1 className="sr-only">
+          KubaZuela — Comida Venezolana y Cubana en Riverview, FL
+        </h1>
         <img
           src={logo}
           alt="KubaZuela"

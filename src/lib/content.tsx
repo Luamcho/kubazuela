@@ -24,7 +24,7 @@ export interface SiteContent {
   menu: { groups: MenuGroup[] };
 }
 
-const ContentContext = createContext<SiteContent | null>(null);
+export const ContentContext = createContext<SiteContent | null>(null);
 
 // Fallback content used only if content.json fails to load (network issue, etc.)
 const FALLBACK: SiteContent = {
