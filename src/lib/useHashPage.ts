@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import { scrollToId } from "@/lib/scroll";
 
+// A visitor can land on /platillos.html directly (from a Google result, a
+// shared link, etc.) as well as via the in-app "#galeria" hash. Treat both
+// as the same page so the SPA behaves consistently either way.
+function isGalleryPath() {
+  return window.location.pathname.replace(/^.*\//, "") === "platillos.html";
+}
+
 export function useHashPage() {
   const [page, setPage] = useState(() =>
-    window.location.hash === "#galeria" ? "galeria" : "inicio"
+    window.location.hash === "#galeria" || isGalleryPath() ? "galeria" : "inicio"
   );
 
   useEffect(() => {

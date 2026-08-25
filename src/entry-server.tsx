@@ -8,6 +8,7 @@ import { Menu } from "@/components/Menu";
 import { Reviews } from "@/components/Reviews";
 import { OrderSection } from "@/components/OrderSection";
 import { Footer } from "@/components/Footer";
+import { Gallery } from "@/pages/Gallery";
 
 // Static, no-op home page render used only for prerendering. Mirrors the
 // "inicio" branch of <App/> but skips useHashPage() (which reads
@@ -32,6 +33,14 @@ export function renderApp(content: SiteContent): string {
   return renderToString(
     <ContentContext.Provider value={content}>
       <StaticHome />
+    </ContentContext.Provider>
+  );
+}
+
+export function renderGallery(content: SiteContent): string {
+  return renderToString(
+    <ContentContext.Provider value={content}>
+      <Gallery onSection={() => {}} onGallery={() => {}} />
     </ContentContext.Provider>
   );
 }

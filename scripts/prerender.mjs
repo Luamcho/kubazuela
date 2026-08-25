@@ -41,10 +41,12 @@ const vite = await createServer({
   appType: "custom",
 });
 
-let html = "";
+let homeHtml = "";
+let galleryHtml = "";
 try {
-  const { renderApp } = await vite.ssrLoadModule("/src/entry-server.tsx");
-  html = renderApp(content);
+  const { renderApp, renderGallery } = await vite.ssrLoadModule("/src/entry-server.tsx");
+  homeHtml = renderApp(content);
+  galleryHtml = renderGallery(content);
 } finally {
   await vite.close();
 }
@@ -54,7 +56,7 @@ const indexPath = path.join(root, "docs/index.html");
 const built = readFileSync(indexPath, "utf-8");
 const injected = built.replace(
   '<div id="root"></div>',
-  `<div id="root">${html}</div>`
+  `<div id="root">${homeHtml}</div>`
 );
 
 if (injected === built) {
@@ -64,4 +66,54 @@ if (injected === built) {
 }
 
 writeFileSync(indexPath, injected);
-console.log(`Prerendered ${html.length} chars of static HTML into docs/index.html`);
+console.log(`Prerendered ${homeHtml.length} chars of static HTML into docs/index.html`);
+
+// --- 5. Build docs/platillos.html: a real, separate crawlable URL for the
+//        dish gallery (hash routes like "#galeria" are NOT distinct URLs
+//        to search engines, so this page is what actually gets indexed).
+//        Reuses the same built <head> assets/scripts, swaps the
+//        page-specific meta tags, and injects the prerendered gallery HTML.
+let platillosHtml = injected
+  .replace(
+    /<title>.*?<\/title>/,
+    "<title>Platillos — KubaZuela | Comida Venezolana y Cubana en Riverview, FL</title>"
+  )
+  .replace(
+    /<meta name="description" content=".*?" \/>/,
+    '<meta name="description" content="Fotos reales de todos los platillos de KubaZuela: pastichos, empanadas, pan de jamón, arroz imperial y postres. Comida venezolana y cubana en Riverview, FL — Delivery y Pick-up." />'
+  )
+  .replace(
+    /<link rel="canonical" href=".*?" \/>/,
+    '<link rel="canonical" href="https://kubazuela.com/platillos.html" />'
+  )
+  .replace(
+    /<meta property="og:title" content=".*?" \/>/,
+    '<meta property="og:title" content="Platillos — KubaZuela" />'
+  )
+  .replace(
+    /<meta property="og:description" content=".*?" \/>/,
+    '<meta property="og:description" content="Fotos reales de todos nuestros platillos venezolanos y cubanos, tal como aparecen en nuestro perfil de Google." />'
+  )
+  .replace(
+    /<meta property="og:url" content=".*?" \/>/,
+    '<meta property="og:url" content="https://kubazuela.com/platillos.html" />'
+  )
+  .replace(
+    /<meta name="twitter:title" content=".*?" \/>/,
+    '<meta name="twitter:title" content="Platillos — KubaZuela" />'
+  )
+  .replace(
+    /<meta name="twitter:description" content=".*?" \/>/,
+    '<meta name="twitter:description" content="Fotos reales de todos nuestros platillos venezolanos y cubanos." />'
+  )
+  .replace(
+    '<div id="root">' + homeHtml + "</div>",
+    `<div id="root">${galleryHtml}</div>`
+  );
+
+if (!platillosHtml.includes(galleryHtml)) {
+  throw new Error("prerender: failed to inject gallery HTML into docs/platillos.html");
+}
+
+writeFileSync(path.join(root, "docs/platillos.html"), platillosHtml);
+console.log(`Prerendered ${galleryHtml.length} chars of static HTML into docs/platillos.html`);
