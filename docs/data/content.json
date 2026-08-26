@@ -39,14 +39,14 @@
             "id": "pasticho-medium",
             "name": "Mount Roraima Combo (Medium)",
             "desc": "Bandeja grande de lasaña venezolana cremosa y casera, servida con 6 refrescos. Rinde para 6–8 personas.",
-            "price": "70",
+            "price": "80",
             "photo": "data/images/medium.png"
           },
           {
             "id": "pasticho-large",
             "name": "Auyantepuy Combo (Large)",
             "desc": "Bandeja extra grande de lasaña venezolana cremosa y quesuda, servida con 12 refrescos. Rinde para 10–12 personas.",
-            "price": "115",
+            "price": "125",
             "photo": "data/images/pasticho-large.jpeg"
           }
         ]
@@ -60,7 +60,7 @@
             "id": "cuban-rice",
             "name": "Cuban Imperial Rice Combo",
             "desc": "Bandeja generosa de arroz imperial cubano, en capas con pollo, queso, mayonesa y especias, servida con 8 refrescos.",
-            "price": "60",
+            "price": "70",
             "photo": "data/images/cuban-rice.png"
           }
         ]
@@ -74,14 +74,14 @@
             "id": "emp-queso",
             "name": "Cheese (Queso)",
             "desc": "Rellena de queso blanco derretido.",
-            "price": "4",
+            "price": "5",
             "photo": "data/images/queso.png"
           },
           {
             "id": "emp-jamon",
             "name": "Ham & Cheese (Jamón y queso)",
             "desc": "Clásica y reconfortante — jamón y queso derretido.",
-            "price": "4",
+            "price": "5",
             "photo": "data/images/jamon.png"
           },
           {
