@@ -18,13 +18,16 @@ export function Gallery({ onSection, onGallery }: GalleryProps) {
 
       <section className="bg-bay-dark">
         <div className="mx-auto max-w-6xl px-5 py-14 text-center md:px-8 md:py-16">
-          <button
-            type="button"
-            onClick={() => onSection("top")}
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              onSection("top");
+            }}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-paper/30 px-4 py-2 font-body text-sm text-paper transition-colors hover:border-mango hover:text-mango"
           >
             ← Volver al inicio
-          </button>
+          </a>
           <div>
             <span className="font-mono text-xs uppercase tracking-widest text-mango">
               Nuestros platillos

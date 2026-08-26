@@ -47,13 +47,16 @@ export function Nav({ onSection, onGallery }: NavProps) {
               {link.label}
             </button>
           ))}
-          <button
-            type="button"
-            onClick={goToGallery}
+          <a
+            href="/platillos.html"
+            onClick={(e) => {
+              e.preventDefault();
+              goToGallery();
+            }}
             className="rounded-full px-4 py-2 text-paper/80 transition-colors hover:bg-paper/10 hover:text-mango"
           >
             Platillos
-          </button>
+          </a>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -99,13 +102,16 @@ export function Nav({ onSection, onGallery }: NavProps) {
               {link.label}
             </button>
           ))}
-          <button
-            type="button"
-            onClick={goToGallery}
+          <a
+            href="/platillos.html"
+            onClick={(e) => {
+              e.preventDefault();
+              goToGallery();
+            }}
             className="rounded-full px-4 py-2.5 text-left text-paper/80 transition-colors hover:bg-paper/10 hover:text-mango"
           >
             Platillos
-          </button>
+          </a>
         </nav>
       )}
     </header>

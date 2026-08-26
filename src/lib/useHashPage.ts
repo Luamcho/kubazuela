@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { scrollToId } from "@/lib/scroll";
 
 // A visitor can land on /platillos.html directly (from a Google result, a
-// shared link, etc.) as well as via the in-app "#galeria" hash. Treat both
+// shared link, etc.) as well as via the in-app "#platillos" hash. Treat both
 // as the same page so the SPA behaves consistently either way.
 function isGalleryPath() {
   return window.location.pathname.replace(/^.*\//, "") === "platillos.html";
@@ -10,12 +10,12 @@ function isGalleryPath() {
 
 export function useHashPage() {
   const [page, setPage] = useState(() =>
-    window.location.hash === "#galeria" || isGalleryPath() ? "galeria" : "inicio"
+    window.location.hash === "#platillos" || isGalleryPath() ? "galeria" : "inicio"
   );
 
   useEffect(() => {
     const onHashChange = () => {
-      setPage(window.location.hash === "#galeria" ? "galeria" : "inicio");
+      setPage(window.location.hash === "#platillos" ? "galeria" : "inicio");
       window.scrollTo({ top: 0 });
     };
     window.addEventListener("hashchange", onHashChange);
@@ -23,7 +23,7 @@ export function useHashPage() {
   }, []);
 
   const goTo = (target: "inicio" | "galeria") => {
-    window.location.hash = target === "galeria" ? "#galeria" : "";
+    window.location.hash = target === "galeria" ? "#platillos" : "";
     setPage(target);
     window.scrollTo({ top: 0 });
   };
