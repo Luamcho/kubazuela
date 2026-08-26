@@ -19,10 +19,35 @@ export function useHashPage() {
       window.scrollTo({ top: 0 });
     };
     window.addEventListener("hashchange", onHashChange);
+
+    // If we landed on the real home page with a section hash (e.g. someone
+    // followed a "/#menu" link from platillos.html), scroll to it once the
+    // page has laid out. "#platillos" is handled separately above.
+    const initialHash = window.location.hash;
+    if (!isGalleryPath() && initialHash && initialHash !== "#platillos") {
+      const id = initialHash.slice(1);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => scrollToId(id));
+      });
+    }
+
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
   const goTo = (target: "inicio" | "galeria") => {
+    // Already on the real /platillos.html page — no hash to add, just make
+    // sure we're scrolled up (avoids URLs like "platillos.html#platillos").
+    if (target === "galeria" && isGalleryPath()) {
+      setPage("galeria");
+      window.scrollTo({ top: 0 });
+      return;
+    }
+    // Going "home" from the real /platillos.html page needs an actual
+    // navigation back to "/" — there is no home content to reveal in place.
+    if (target === "inicio" && isGalleryPath()) {
+      window.location.href = "/";
+      return;
+    }
     window.location.hash = target === "galeria" ? "#platillos" : "";
     setPage(target);
     window.scrollTo({ top: 0 });
@@ -33,6 +58,12 @@ export function useHashPage() {
   const goToSection = (id: string) => {
     if (id === "top") {
       goTo("inicio");
+      return;
+    }
+    // From the real /platillos.html page there's no home content mounted to
+    // scroll within — do a real navigation to "/#<section>" instead.
+    if (isGalleryPath()) {
+      window.location.href = "/#" + id;
       return;
     }
     window.location.hash = "";
