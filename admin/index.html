@@ -198,7 +198,7 @@
   }
 
   var state = {
-    screen: "password",
+    screen: "login",
     passwordInput: "",
     passwordError: "",
     token: "",
@@ -379,7 +379,7 @@
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  function renderPasswordScreen() {
+  function renderLoginScreen() {
     return (
       '<div class="gate">' +
         '<img class="logo-img" src="' + LOGO_URI + '" alt="KubaZuela on the Bay" />' +
@@ -387,24 +387,11 @@
         '<p class="subtitle">KubaZuela on the Bay — edita el menú, precios, fotos, horario y textos del sitio.</p>' +
         '<div class="gate-form">' +
           (state.passwordError ? '<div class="error-box">' + esc(state.passwordError) + '</div>' : '') +
-          '<input type="password" id="pw-input" placeholder="Contraseña del panel" autocomplete="off" />' +
-          '<button class="btn-primary" id="pw-submit">Entrar</button>' +
-        '</div>' +
-      '</div>'
-    );
-  }
-
-  function renderTokenScreen() {
-    return (
-      '<div class="gate">' +
-        '<img class="logo-img" src="' + LOGO_URI + '" alt="KubaZuela on the Bay" />' +
-        '<h1>Conectar con GitHub</h1>' +
-        '<p class="subtitle">Pega tu token de acceso personal para poder publicar cambios en el repositorio.</p>' +
-        '<div class="gate-form">' +
           (state.tokenError ? '<div class="error-box">' + esc(state.tokenError) + '</div>' : '') +
-          '<input type="password" id="token-input" placeholder="github_pat_…" autocomplete="off" />' +
-          '<button class="btn-primary" id="token-submit" ' + (state.loadingContent ? "disabled" : "") + '>' +
-            (state.loadingContent ? '<span class="spinner"></span>Conectando…' : 'Cargar contenido actual') +
+          '<input type="password" id="pw-input" placeholder="Contraseña del panel" autocomplete="off" />' +
+          '<input type="password" id="token-input" placeholder="Token de GitHub (github_pat_…)" autocomplete="off" />' +
+          '<button class="btn-primary" id="login-submit" ' + (state.loadingContent ? "disabled" : "") + '>' +
+            (state.loadingContent ? '<span class="spinner"></span>Conectando…' : 'Entrar') +
           '</button>' +
         '</div>' +
         '<p class="help-text">El token no se guarda: solo vive en esta pestaña mientras la tengas abierta. Usa uno de tipo fine-grained, limitado al repositorio <b>kubazuela</b> con permiso <b>Contents: Read and write</b>. Puedes crear uno en <a href="#" id="token-help-link">github.com/settings/personal-access-tokens/new</a>.</p>' +
@@ -559,54 +546,51 @@
   function render() {
     var app = document.getElementById("app");
     var html;
-    if (state.screen === "password") html = renderPasswordScreen();
-    else if (state.screen === "token") html = renderTokenScreen();
+    if (state.screen === "login") html = renderLoginScreen();
     else html = renderDashboard();
     app.innerHTML = html;
     wireEvents();
   }
 
   function wireEvents() {
-    var pwSubmit = document.getElementById("pw-submit");
-    if (pwSubmit) {
-      pwSubmit.addEventListener("click", function () {
-        var val = document.getElementById("pw-input").value;
-        if (val === DASH_PASSWORD) {
-          state.passwordError = "";
-          state.screen = "token";
-          render();
-        } else {
+    var loginSubmit = document.getElementById("login-submit");
+    if (loginSubmit) {
+      var doLogin = function () {
+        var pwVal = document.getElementById("pw-input").value;
+        var tokenVal = document.getElementById("token-input").value.trim();
+        state.passwordError = "";
+        state.tokenError = "";
+        if (pwVal !== DASH_PASSWORD) {
           state.passwordError = "Contraseña incorrecta.";
           render();
+          return;
         }
-      });
-      var pwInput = document.getElementById("pw-input");
-      pwInput.addEventListener("keydown", function (e) { if (e.key === "Enter") pwSubmit.click(); });
-      pwInput.focus();
-    }
-
-    var tokenSubmit = document.getElementById("token-submit");
-    if (tokenSubmit) {
-      tokenSubmit.addEventListener("click", function () {
-        var val = document.getElementById("token-input").value.trim();
-        if (!val) { state.tokenError = "Ingresa un token válido."; render(); return; }
-        state.token = val;
+        if (!tokenVal) {
+          state.tokenError = "Ingresa un token válido.";
+          render();
+          return;
+        }
+        state.token = tokenVal;
         loadContent();
-      });
+      };
+      loginSubmit.addEventListener("click", doLogin);
+      var pwInput = document.getElementById("pw-input");
       var tokenInput = document.getElementById("token-input");
-      tokenInput.addEventListener("keydown", function (e) { if (e.key === "Enter") tokenSubmit.click(); });
+      pwInput.addEventListener("keydown", function (e) { if (e.key === "Enter") doLogin(); });
+      tokenInput.addEventListener("keydown", function (e) { if (e.key === "Enter") doLogin(); });
       var helpLink = document.getElementById("token-help-link");
       if (helpLink) helpLink.addEventListener("click", function (e) {
         e.preventDefault();
         window.open("https://github.com/settings/personal-access-tokens/new", "_blank");
       });
+      pwInput.focus();
     }
 
     var logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) logoutBtn.addEventListener("click", function () {
       if (!confirm("¿Salir? Perderás los cambios sin publicar.")) return;
       state = {
-        screen: "password", passwordInput: "", passwordError: "", token: "", tokenError: "",
+        screen: "login", passwordInput: "", passwordError: "", token: "", tokenError: "",
         loadingContent: false, content: null, shaPublic: null, shaDocs: null, activeTab: "menu",
         pendingImages: {}, imagePreviews: {}, publishing: false, publishMessage: "", publishState: ""
       };
