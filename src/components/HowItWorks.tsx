@@ -24,7 +24,7 @@ export function HowItWorks() {
           <h2 className="font-display text-3xl uppercase text-ink md:text-4xl">
             Cómo pedir
           </h2>
-          <span className="hidden font-mono text-xs uppercase tracking-widest text-ink/40 md:block">
+          <span className="hidden font-mono text-xs uppercase tracking-widest text-ink/70 md:block">
             Sin dine-in · Solo texto y WhatsApp
           </span>
         </div>

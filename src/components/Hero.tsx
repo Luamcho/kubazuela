@@ -28,6 +28,7 @@ export function Hero() {
         <img
           src={logo}
           alt="KubaZuela"
+          fetchPriority="high"
           className="w-[68vw] max-w-[360px] drop-shadow-xl md:w-[380px]"
         />
 

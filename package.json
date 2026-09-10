@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build && npm run prerender && npm run restore:panel",
     "prerender": "node scripts/prerender.mjs",
-    "restore:panel": "git checkout HEAD -- docs/panel docs/CNAME",
+    "restore:panel": "git checkout HEAD -- docs/CNAME",
     "lint": "oxlint",
     "preview": "vite preview"
   },

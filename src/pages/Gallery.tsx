@@ -61,10 +61,12 @@ export function Gallery({ onSection, onGallery }: GalleryProps) {
                       <img
                         src={item.photo}
                         alt={`${item.name} — KubaZuela, comida venezolana y cubana en Riverview FL`}
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center font-mono text-xs uppercase tracking-widest text-ink/30">
+                      <div className="flex h-full w-full items-center justify-center font-mono text-xs uppercase tracking-widest text-ink/70">
                         Sin foto
                       </div>
                     )}
@@ -78,7 +80,7 @@ export function Gallery({ onSection, onGallery }: GalleryProps) {
                         ${item.price}
                       </span>
                     </div>
-                    <p className="mt-1 font-body text-xs text-ink/60">
+                    <p className="mt-1 font-body text-xs text-ink/70">
                       {item.desc}
                     </p>
                   </div>

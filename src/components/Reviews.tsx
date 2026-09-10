@@ -19,7 +19,7 @@ export function Reviews() {
             </span>
             <div className="mb-1 text-left">
               <div className="text-mango-dark text-lg">★★★★★</div>
-              <p className="font-mono text-xs uppercase tracking-widest text-ink/50">
+              <p className="font-mono text-xs uppercase tracking-widest text-ink/70">
                 {reviews.countLabel}
               </p>
             </div>

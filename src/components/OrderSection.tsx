@@ -53,7 +53,7 @@ export function OrderSection() {
                 ))}
               </div>
             </div>
-            <p className="mt-3 text-center font-mono text-xs uppercase tracking-widest text-paper/40">
+            <p className="mt-3 text-center font-mono text-xs uppercase tracking-widest text-paper/60">
               Así de fácil — todo por texto
             </p>
           </div>

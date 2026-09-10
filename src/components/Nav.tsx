@@ -75,7 +75,7 @@ export function Nav({ onSection, onGallery }: NavProps) {
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="grid h-9 w-9 place-items-center rounded-full border border-paper/20 text-paper transition-colors hover:border-mango hover:text-mango md:hidden"
+            className="grid h-11 w-11 place-items-center rounded-full border border-paper/20 text-paper transition-colors hover:border-mango hover:text-mango md:hidden"
           >
             {open ? (
               <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[2.5]">

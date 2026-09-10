@@ -29,7 +29,7 @@ export function Menu({ onSeeAll }: { onSeeAll?: () => void }) {
                   {group.label}
                 </h3>
                 {group.note && (
-                  <span className="font-mono text-xs uppercase tracking-widest text-paper/40">
+                  <span className="font-mono text-xs uppercase tracking-widest text-paper/60">
                     {group.note}
                   </span>
                 )}
