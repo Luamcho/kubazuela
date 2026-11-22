@@ -29,9 +29,19 @@ Object.defineProperty(globalThis, "navigator", {
 globalThis.window.scrollTo = () => {};
 
 // --- 2. Load content.json the same data the live site fetches at runtime.
-const content = JSON.parse(
-  readFileSync(path.join(root, "public/data/content.json"), "utf-8")
-);
+// Source of truth is Firestore (site/content); falls back to the repo copy.
+let content;
+try {
+  const res = await fetch(
+    "https://firestore.googleapis.com/v1/projects/kubazuela-50f12/databases/(default)/documents/site/content?key=AIzaSyCa619pNjR7vtb3XK3eGpCTMiInS92OXKA"
+  );
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  content = JSON.parse((await res.json()).fields.json.stringValue);
+  console.log("prerender: content loaded from Firestore");
+} catch (e) {
+  console.warn(`prerender: Firestore unavailable (${e.message}); using public/data/content.json`);
+  content = JSON.parse(readFileSync(path.join(root, "public/data/content.json"), "utf-8"));
+}
 
 // --- 3. Use Vite's SSR module loader to resolve TS/JSX/@ aliases exactly
 //        like the real app, then render to a string.

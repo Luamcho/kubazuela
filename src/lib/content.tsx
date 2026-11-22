@@ -24,7 +24,11 @@ export interface SiteContent {
   menu: { groups: MenuGroup[] };
 }
 
-export const ContentContext = createContext<SiteContent | null>(null);
+// La clave web de Firebase es publica por diseno; la seguridad la dan las reglas de Firestore.
+const FIRESTORE_URL =
+  "https://firestore.googleapis.com/v1/projects/kubazuela-50f12/databases/(default)/documents/site/content?key=AIzaSyCa619pNjR7vtb3XK3eGpCTMiInS92OXKA";
+
+export const ContentContext =createContext<SiteContent | null>(null);
 
 // Fallback content used only if content.json fails to load (network issue, etc.)
 const FALLBACK: SiteContent = {
@@ -56,12 +60,21 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const base = import.meta.env.BASE_URL;
-    fetch(`${base}data/content.json?t=${Date.now()}`, { cache: "no-store" })
+    // Fuente principal: Firestore (documento publico site/content).
+    // Respaldo: copia estatica data/content.json incluida en el despliegue.
+    fetch(FIRESTORE_URL, { cache: "no-store" })
       .then((res) => {
-        if (!res.ok) throw new Error("No se pudo cargar content.json");
+        if (!res.ok) throw new Error("No se pudo leer Firestore");
         return res.json();
       })
-      .then((data: SiteContent) => setContent(data))
+      .then((doc) => JSON.parse(doc.fields.json.stringValue) as SiteContent)
+      .catch(() =>
+        fetch(`${base}data/content.json?t=${Date.now()}`, { cache: "no-store" }).then((res) => {
+          if (!res.ok) throw new Error("No se pudo cargar content.json");
+          return res.json() as Promise<SiteContent>;
+        })
+      )
+      .then((data) => setContent(data))
       .catch(() => setContent(FALLBACK));
   }, []);
 
