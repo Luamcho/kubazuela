@@ -325,6 +325,7 @@
     tokMsgState: "",
     tokBusy: false,
     pendingImages: {},
+    pendingDeletes: [],
     imagePreviews: {},
     publishing: false,
     publishMessage: "",
@@ -527,7 +528,14 @@
     render();
     try {
       var imageIds = Object.keys(state.pendingImages);
-      if (imageIds.length) {
+      var skipDeletes = false;
+      if (!imageIds.length && state.pendingDeletes.length && !state.token) {
+        // Solo hay fotos por borrar y no hay token: se publica igual y se avisa.
+        state.token = askGithubToken("Para borrar del repositorio las fotos de los platillos eliminados hace falta el token.");
+        if (state.token) await saveGithubToken(state.token);
+        else skipDeletes = true;
+      }
+      if (imageIds.length || (state.pendingDeletes.length && !skipDeletes)) {
         if (!state.token) {
           state.token = askGithubToken("");
           if (!state.token) throw new Error("Publicación cancelada: hace falta el token de GitHub para subir fotos.");
@@ -543,7 +551,7 @@
           await saveGithubToken(state.token);
         }
       }
-      var oldPhotos = [];
+      var oldPhotos = skipDeletes ? [] : state.pendingDeletes.map(function (p) { return { path: p, itemId: null }; });
       for (var i = 0; i < imageIds.length; i++) {
         var itemId = imageIds[i];
         var file = state.pendingImages[itemId];
@@ -576,7 +584,7 @@
         if (!/^data\/images\/[^\/]+$/.test(old)) continue;
         if (PROTECTED_IMAGES.indexOf(old) !== -1) continue;
         if (photoInUse(old, null)) continue;
-        state.publishMessage = "Borrando foto anterior " + (d + 1) + " de " + oldPhotos.length + "…";
+        state.publishMessage = "Borrando foto " + (d + 1) + " de " + oldPhotos.length + "…";
         render();
         try {
           await ghDelete("public/" + old, "Borra foto reemplazada: " + old);
@@ -587,12 +595,14 @@
       }
 
       state.pendingImages = {};
+      state.pendingDeletes = [];
       state.imagePreviews = {};
       state.publishState = "ok";
       state.publishMessage = (imageIds.length
           ? "Publicado. Los textos ya se ven en el sitio; las fotos nuevas aparecen en 1–2 minutos."
           : "Publicado en Firebase. Los cambios ya están visibles en el sitio.") +
-        (deleteFailed ? " (No se pudieron borrar " + deleteFailed + " foto(s) anterior(es) del repositorio.)" : "");
+        (deleteFailed ? " (No se pudieron borrar " + deleteFailed + " foto(s) del repositorio.)" : "") +
+        (skipDeletes ? " Las fotos de los platillos eliminados no se borraron: agrega el token en Configuración." : "");
     } catch (e) {
       state.publishState = "err";
       state.publishMessage = e.message || "Ocurrió un error al publicar.";
@@ -616,8 +626,15 @@
     state.content.menu.groups.push({ id: "grupo-" + uid(), label: "Nuevo grupo", note: "", items: [] });
     render();
   }
+  // Recuerda la foto de un platillo eliminado para borrarla del repo al publicar.
+  function forgetItem(item) {
+    if (item.photo) state.pendingDeletes.push(item.photo);
+    delete state.pendingImages[item.id];
+    delete state.imagePreviews[item.id];
+  }
   function removeGroup(gi) {
-    if (!confirm("¿Eliminar este grupo completo del menú?")) return;
+    if (!confirm("¿Eliminar este grupo completo del menú? Las fotos de sus platillos se borrarán al publicar.")) return;
+    state.content.menu.groups[gi].items.forEach(forgetItem);
     state.content.menu.groups.splice(gi, 1);
     render();
   }
@@ -627,6 +644,9 @@
     render();
   }
   function removeItem(gi, ii) {
+    var item = state.content.menu.groups[gi].items[ii];
+    if (!confirm("¿Eliminar \"" + (item.name || "este platillo") + "\"?" + (item.photo ? " Su foto se borrará al publicar." : ""))) return;
+    forgetItem(item);
     state.content.menu.groups[gi].items.splice(ii, 1);
     render();
   }
@@ -957,7 +977,7 @@
       state = {
         screen: "login", passwordError: "", userInput: "", idToken: "", idTokenExp: 0, refreshToken: "", token: "", tokenError: "",
         loadingContent: false, content: null, activeTab: "menu", tokMsg: "", tokMsgState: "", tokBusy: false,
-        pendingImages: {}, imagePreviews: {}, publishing: false, publishMessage: "", publishState: ""
+        pendingImages: {}, pendingDeletes: [], imagePreviews: {}, publishing: false, publishMessage: "", publishState: ""
       };
       render();
     });
