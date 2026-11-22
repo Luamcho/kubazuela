@@ -106,7 +106,7 @@ let platillosHtml = injected
   )
   .replace(
     /<meta property="og:url" content=".*?" \/>/,
-    '<meta property="og:url" content="https://kubazuela.com/platillos.html" />'
+    '<meta property="og:url" content="https://www.kubazuela.com/platillos.html" />'
   )
   .replace(
     /<meta name="twitter:title" content=".*?" \/>/,
