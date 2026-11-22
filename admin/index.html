@@ -248,6 +248,25 @@
   @media (prefers-reduced-motion: reduce) {
     .login-input input, .login-submit { transition: none; }
   }
+
+  /* ---------- Configuracion ---------- */
+  .tok-status {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border-radius: 12px; margin-bottom: 16px;
+    font-size: 13px; line-height: 1.4;
+  }
+  .tok-status.on { background: #E7F4EC; color: var(--ok); }
+  .tok-status.off { background: #FFF4D6; color: #7A5A00; }
+  .tok-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: currentColor; }
+  .tok-status code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
+  .tok-input { position: relative; }
+  .tok-input input { padding-right: 46px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 14px; }
+  .tok-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .tok-msg { margin-top: 12px; font-size: 13px; padding: 10px 12px; border-radius: 10px; }
+  .tok-msg.ok { background: #E7F4EC; color: var(--ok); }
+  .tok-msg.err { background: #FBE9E5; color: var(--danger); }
+  .tok-help { margin: 16px 0 0; padding: 0 0 0 18px; font-size: 13px; color: #5f5b4f; line-height: 1.6; }
+  .tok-help a { color: var(--bay); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -288,6 +307,9 @@
     shaPublic: null,
     shaDocs: null,
     activeTab: "menu",
+    tokMsg: "",
+    tokMsgState: "",
+    tokBusy: false,
     pendingImages: {},
     imagePreviews: {},
     publishing: false,
@@ -612,7 +634,8 @@
       { id: "menu", label: "Menú" },
       { id: "hours", label: "Horario y contacto" },
       { id: "texts", label: "Textos (Hero / Nosotros)" },
-      { id: "reviews", label: "Reseñas" }
+      { id: "reviews", label: "Reseñas" },
+      { id: "settings", label: "Configuración" }
     ];
     var html = '<nav class="tabs">';
     tabs.forEach(function (t) {
@@ -713,12 +736,79 @@
     );
   }
 
+  function maskToken(t) {
+    if (!t) return "";
+    return t.slice(0, 11) + "…" + t.slice(-4);
+  }
+
+  function renderSettingsTab() {
+    var has = !!state.token;
+    return (
+      '<div class="card">' +
+        '<h2>Token de GitHub</h2>' +
+        '<p class="hint">Se usa solo para subir fotos nuevas al repositorio. Se guarda de forma privada en tu cuenta de Firebase.</p>' +
+        '<div class="tok-status ' + (has ? 'on' : 'off') + '" role="status">' +
+          '<span class="tok-dot" aria-hidden="true"></span>' +
+          (has
+            ? '<span>Token guardado: <code>' + esc(maskToken(state.token)) + '</code></span>'
+            : '<span>No hay token guardado. Las fotos nuevas no se podrán subir hasta que agregues uno.</span>') +
+        '</div>' +
+        '<div class="field" style="margin-bottom:0;">' +
+          '<label for="tok-input">' + (has ? 'Reemplazar token' : 'Pegar token') + '</label>' +
+          '<div class="tok-input login-input">' +
+            '<input type="password" id="tok-input" placeholder="github_pat_…" autocomplete="off" spellcheck="false" style="padding-left:13px;" />' +
+            '<button type="button" class="pw-toggle" id="tok-toggle" aria-label="Mostrar token" aria-pressed="false">' + ICON_EYE + '</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tok-actions">' +
+          '<button class="btn-primary btn-sm" id="tok-save"' + (state.tokBusy ? ' disabled' : '') + '>' + (state.tokBusy ? '<span class="spinner"></span>Verificando…' : 'Verificar y guardar') + '</button>' +
+          (has ? '<button class="btn-ghost btn-sm" id="tok-test"' + (state.tokBusy ? ' disabled' : '') + '>Probar token actual</button>' : '') +
+          (has ? '<button class="btn-danger" id="tok-delete"' + (state.tokBusy ? ' disabled' : '') + '>Eliminar token</button>' : '') +
+        '</div>' +
+        (state.tokMsg ? '<div class="tok-msg ' + state.tokMsgState + '" role="alert">' + esc(state.tokMsg) + '</div>' : '') +
+        '<ol class="tok-help">' +
+          '<li>Abre <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → crear token fine-grained ↗</a>.</li>' +
+          '<li>En <b>Repository access</b> elige solo <b>' + esc(OWNER + "/" + REPO) + '</b>.</li>' +
+          '<li>En <b>Permissions → Contents</b> elige <b>Read and write</b>.</li>' +
+          '<li>Copia el token, pégalo aquí y pulsa <b>Verificar y guardar</b>.</li>' +
+        '</ol>' +
+      '</div>'
+    );
+  }
+
+  // Comprueba que el token pueda leer el repo; devuelve un mensaje de error o "".
+  async function checkGithubToken(token) {
+    var res = await fetch(API + "/repos/" + OWNER + "/" + REPO, {
+      headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github+json" }
+    }).catch(function () { return null; });
+    if (!res) return "No se pudo conectar con GitHub.";
+    if (res.status === 401) return "GitHub rechazó el token (no es válido, venció o fue revocado).";
+    if (res.status === 404 || res.status === 403) return "El token no tiene acceso al repositorio " + OWNER + "/" + REPO + ".";
+    if (!res.ok) return "GitHub respondió con un error (" + res.status + ").";
+    return "";
+  }
+
+  async function tokAction(fn) {
+    state.tokBusy = true;
+    state.tokMsg = "";
+    render();
+    try {
+      await fn();
+    } catch (e) {
+      state.tokMsgState = "err";
+      state.tokMsg = e.message || "Ocurrió un error.";
+    }
+    state.tokBusy = false;
+    render();
+  }
+
   function renderDashboard() {
     var body = "";
     if (state.activeTab === "menu") body = renderMenuTab();
     else if (state.activeTab === "hours") body = renderHoursTab();
     else if (state.activeTab === "texts") body = renderTextsTab();
     else if (state.activeTab === "reviews") body = renderReviewsTab();
+    else if (state.activeTab === "settings") body = renderSettingsTab();
 
     var statusClass = state.publishState === "ok" ? "ok" : state.publishState === "err" ? "err" : "";
 
@@ -726,6 +816,7 @@
       renderTopbar() +
       renderTabs() +
       body +
+      (state.activeTab === "settings" ? '' :
       '<div class="publish-bar">' +
         '<div class="publish-status ' + statusClass + '">' +
           (state.publishing ? '<span class="spinner"></span>' : '') +
@@ -734,7 +825,7 @@
         '<button class="btn-primary" id="publish-btn" ' + (state.publishing ? "disabled" : "") + '>' +
           (state.publishing ? "Publicando…" : "Publicar cambios") +
         '</button>' +
-      '</div>' +
+      '</div>') +
       '<p style="text-align:center;margin-top:14px;"><a href="' + SITE_URL + '" target="_blank" rel="noopener" style="font-size:12px;color:#6b6b66;">Ver sitio en vivo ↗</a></p>'
     );
   }
@@ -796,15 +887,67 @@
       if (!confirm("¿Salir? Perderás los cambios sin publicar.")) return;
       state = {
         screen: "login", passwordError: "", userInput: "", idToken: "", idTokenExp: 0, refreshToken: "", token: "", tokenError: "",
-        loadingContent: false, content: null, activeTab: "menu",
+        loadingContent: false, content: null, activeTab: "menu", tokMsg: "", tokMsgState: "", tokBusy: false,
         pendingImages: {}, imagePreviews: {}, publishing: false, publishMessage: "", publishState: ""
       };
       render();
     });
 
+    var tokSave = document.getElementById("tok-save");
+    if (tokSave) {
+      var tokInput = document.getElementById("tok-input");
+      var tokToggle = document.getElementById("tok-toggle");
+      tokToggle.addEventListener("click", function () {
+        var show = tokInput.type === "password";
+        tokInput.type = show ? "text" : "password";
+        tokToggle.innerHTML = show ? ICON_EYE_OFF : ICON_EYE;
+        tokToggle.setAttribute("aria-pressed", show ? "true" : "false");
+        tokToggle.setAttribute("aria-label", show ? "Ocultar token" : "Mostrar token");
+      });
+      var doSave = function () {
+        var t = tokInput.value.trim();
+        if (!t) {
+          state.tokMsgState = "err";
+          state.tokMsg = "Pega un token antes de guardar.";
+          render();
+          return;
+        }
+        tokAction(async function () {
+          var err = await checkGithubToken(t);
+          if (err) throw new Error(err);
+          await saveGithubToken(t);
+          state.token = t;
+          state.tokMsgState = "ok";
+          state.tokMsg = "Token verificado y guardado.";
+        });
+      };
+      tokSave.addEventListener("click", doSave);
+      tokInput.addEventListener("keydown", function (e) { if (e.key === "Enter") doSave(); });
+      var tokTest = document.getElementById("tok-test");
+      if (tokTest) tokTest.addEventListener("click", function () {
+        tokAction(async function () {
+          var err = await checkGithubToken(state.token);
+          if (err) throw new Error(err);
+          state.tokMsgState = "ok";
+          state.tokMsg = "El token guardado funciona correctamente.";
+        });
+      });
+      var tokDelete = document.getElementById("tok-delete");
+      if (tokDelete) tokDelete.addEventListener("click", function () {
+        if (!confirm("¿Eliminar el token guardado? Tendrás que agregar uno nuevo para subir fotos.")) return;
+        tokAction(async function () {
+          await saveGithubToken("");
+          state.token = "";
+          state.tokMsgState = "ok";
+          state.tokMsg = "Token eliminado.";
+        });
+      });
+    }
+
     document.querySelectorAll("[data-tab]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         state.activeTab = btn.getAttribute("data-tab");
+        state.tokMsg = "";
         render();
       });
     });
