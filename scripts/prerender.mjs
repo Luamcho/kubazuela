@@ -18,7 +18,7 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 // --- 1. Minimal DOM shim so hooks/components that touch window/document
 //        (event listeners, scrollTo, etc.) don't crash during SSR.
 const dom = new JSDOM("<!doctype html><html><body></body></html>", {
-  url: "https://kubazuela.com/",
+  url: "https://www.kubazuela.com/",
 });
 globalThis.window = dom.window;
 globalThis.document = dom.window.document;
@@ -94,7 +94,7 @@ let platillosHtml = injected
   )
   .replace(
     /<link rel="canonical" href=".*?" \/>/,
-    '<link rel="canonical" href="https://kubazuela.com/platillos.html" />'
+    '<link rel="canonical" href="https://www.kubazuela.com/platillos.html" />'
   )
   .replace(
     /<meta property="og:title" content=".*?" \/>/,
